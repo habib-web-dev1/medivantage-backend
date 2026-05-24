@@ -8,14 +8,13 @@ import { connectDB } from "./config/db";
 const app = express();
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
-// Build the allowed-origins list from env. Always include known origins.
 const productionOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",").map((o) => o.trim())
   : [];
 
 const allowedOrigins = [
   ...productionOrigins,
-  "https://medivantage.vercel.app", // production frontend (hardcoded fallback)
+  "https://medivantage.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://127.0.0.1:3000",
@@ -26,7 +25,15 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (Postman, curl, server-to-server)
       if (!origin) return callback(null, true);
+
+      // Allow exact matches
       if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      // Allow all Vercel preview deployments for this project
+      if (origin.endsWith(".vercel.app") && origin.includes("medivantage")) {
+        return callback(null, true);
+      }
+
       callback(new Error(`CORS: origin ${origin} not allowed`));
     },
     credentials: true,
