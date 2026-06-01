@@ -1,0 +1,2 @@
+export declare const analyzeSymptoms: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
+//# sourceMappingURL=engine.controller.d.ts.map

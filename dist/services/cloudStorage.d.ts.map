@@ -1,0 +1,1 @@
+{"version":3,"file":"cloudStorage.d.ts","sourceRoot":"","sources":["../../src/services/cloudStorage.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,YAAY;IAC3B,GAAG,EAAE,MAAM,CAAC;IACZ,QAAQ,EAAE,MAAM,CAAC;CAClB;AAED;;;;;;;;;;GAUG;AACH,wBAAsB,aAAa,CACjC,MAAM,EAAE,MAAM,EACd,QAAQ,EAAE,MAAM,GACf,OAAO,CAAC,YAAY,CAAC,CAoCvB"}

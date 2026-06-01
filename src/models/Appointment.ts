@@ -55,7 +55,8 @@ const appointmentSchema = new mongoose.Schema(
           duration: { type: String, required: true }, // e.g., "7 days"
         },
       ],
-      pdfUrl: String, // Cloud URL to the generated PDF prescription file
+      pdfUrl: String, // Download endpoint URL
+      pdfData: String, // Base64-encoded PDF stored in DB (fallback when no cloud)
       issuedAt: Date,
     },
   },

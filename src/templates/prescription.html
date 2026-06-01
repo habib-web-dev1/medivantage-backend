@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        color: #1e293b;
+        background: #fff;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 3px solid #3b82f6;
+        padding-bottom: 20px;
+        margin-bottom: 28px;
+      }
+      .logo {
+        font-size: 26px;
+        font-weight: bold;
+        color: #3b82f6;
+      }
+      .tagline {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .rx-badge {
+        font-size: 48px;
+        font-weight: bold;
+        color: #dbeafe;
+        line-height: 1;
+      }
+      .section {
+        margin-bottom: 24px;
+      }
+      .section-title {
+        font-size: 11px;
+        font-weight: bold;
+        color: #3b82f6;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      .info-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .info-item label {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .info-item span {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+      .doctor-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #3b82f6;
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin-bottom: 24px;
+      }
+      .doctor-name {
+        font-size: 16px;
+        font-weight: bold;
+        color: #1e293b;
+        margin-bottom: 8px;
+      }
+      .doctor-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .doctor-meta-item label {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+      }
+      .doctor-meta-item span {
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+      }
+      thead tr {
+        background: #3b82f6;
+      }
+      th {
+        padding: 10px 14px;
+        text-align: left;
+        font-size: 11px;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 13px;
+        color: #334155;
+      }
+      tbody tr:nth-child(even) td {
+        background: #f8fafc;
+      }
+      .footer {
+        margin-top: 40px;
+        padding-top: 16px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .footer-note {
+        font-size: 10px;
+        color: #94a3b8;
+        max-width: 60%;
+        line-height: 1.5;
+      }
+      .signature-block {
+        text-align: center;
+      }
+      .signature-line {
+        width: 160px;
+        border-top: 1px solid #334155;
+        margin-bottom: 4px;
+      }
+      .signature-label {
+        font-size: 11px;
+        color: #475569;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div>
+        <div class="logo">MediVantage</div>
+        <div class="tagline">AI-Driven Diagnostics, Human-Centered Care</div>
+      </div>
+      <div class="rx-badge">Rx</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Prescribing Physician</div>
+      <div class="doctor-card">
+        <div class="doctor-name">__DOCTOR_NAME__</div>
+        <div class="doctor-meta">
+          __DOCTOR_SPECIALIZATION_ROW__ __DOCTOR_LICENSE_ROW__
+          __DOCTOR_EXPERIENCE_ROW__
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Prescription Details</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Patient Name</label>
+          <span>__PATIENT_NAME__</span>
+        </div>
+        <div class="info-item">
+          <label>Date Issued</label>
+          <span>__DATE__</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Prescribed Medications</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          __MEDICATIONS_ROWS__
+        </tbody>
+      </table>
+    </div>
+
+    __CLINICAL_NOTES_SECTION__
+
+    <div class="footer">
+      <div class="footer-note">
+        This prescription was generated electronically by MediVantage.<br />
+        Always consult your healthcare provider before making any changes to
+        your medication.
+      </div>
+      <div class="signature-block">
+        <div class="signature-line"></div>
+        <div class="signature-label">__DOCTOR_NAME__</div>
+      </div>
+    </div>
+    <div>
+      <p class="text-center">
+        This is Auto Generated Prescription. No need Signature
+      </p>
+    </div>
+  </body>
+</html>
