@@ -10,8 +10,15 @@
 
 > REST API powering the MediVantage AI-driven healthcare platform. Handles authentication, appointments, prescriptions, AI symptom analysis, and real-time notifications.
 
-**Live API:** `https://medivantage-backend.vercel.app`
-**Health check:** [`/api/v1/health`](https://medivantage-backend.vercel.app/api/v1/health)
+---
+
+## 🔗 Links
+
+| Resource               | URL                                                    |
+| ---------------------- | ------------------------------------------------------ |
+| 🌐 Live Application    | https://medivantage.vercel.app                         |
+| 📦 Frontend Repository | https://github.com/habib-web-dev1/medivantage-frontend |
+| 🔧 Backend Repository  | https://github.com/habib-web-dev1/medivantage-backend  |
 
 ---
 
@@ -23,7 +30,6 @@
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
-- [Database Seeding](#database-seeding)
 - [Deployment](#deployment)
 
 ---
@@ -125,7 +131,7 @@ medivantage-backend/
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/medivantage-backend.git
+git clone https://github.com/habib-web-dev1/medivantage-backend.git
 cd medivantage-backend
 
 # Install dependencies
@@ -233,8 +239,6 @@ All endpoints are prefixed with `/api/v1`.
 
 ---
 
-## Database Seeding
-
 The seed script populates the database with:
 
 - **50 medicines** across 8 categories
@@ -245,14 +249,6 @@ The seed script populates the database with:
 ```bash
 npm run seed
 ```
-
-**Demo credentials after seeding:**
-
-| Role    | Email                           | Password      |
-| ------- | ------------------------------- | ------------- |
-| Admin   | `admin@gmail.com`               | `Admin123`    |
-| Doctor  | `sarah.jenkins@medivantage.com` | `Doctor@1234` |
-| Patient | `patient@gmail.com`             | `Patient123`  |
 
 ---
 
@@ -298,6 +294,12 @@ npm run test:watch # Run Jest in watch mode
 
 ---
 
-## License
+## 📄 License
 
-ISC
+This project is for portfolio and demonstration purposes.
+
+---
+
+<div align="center">
+  Built with ❤️ by <a href="https://github.com/habib-web-dev1">habib-web-dev1</a>
+</div>
