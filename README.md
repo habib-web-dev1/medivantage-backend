@@ -5,6 +5,8 @@
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white" />
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-20-2496ED?style=flat-square&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" />
   <img src="https://img.shields.io/badge/Deployed-Vercel-000000?style=flat-square&logo=vercel&logoColor=white" />
 </p>
 
@@ -30,7 +32,10 @@
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
+- [Docker](#docker)
+- [CI/CD](#cicd)
 - [Deployment](#deployment)
+- [Scripts](#scripts)
 
 ---
 
@@ -49,19 +54,21 @@
 
 ## Tech Stack
 
-| Layer          | Technology                    |
-| -------------- | ----------------------------- |
-| Runtime        | Node.js 20+                   |
-| Language       | TypeScript 5                  |
-| Framework      | Express 5                     |
-| Database       | MongoDB Atlas via Mongoose 9  |
-| Auth           | JWT (jsonwebtoken) + bcryptjs |
-| Real-time      | Socket.io 4                   |
-| PDF Generation | jsPDF (serverless-safe)       |
-| Cloud Storage  | Cloudinary (optional)         |
-| Validation     | Zod                           |
-| Testing        | Jest + Supertest              |
-| Deployment     | Vercel (serverless)           |
+| Layer          | Technology                           |
+| -------------- | ------------------------------------ |
+| Runtime        | Node.js 20+                          |
+| Language       | TypeScript 5                         |
+| Framework      | Express 5                            |
+| Database       | MongoDB Atlas via Mongoose 9         |
+| Auth           | JWT (jsonwebtoken) + bcryptjs        |
+| Real-time      | Socket.io 4                          |
+| PDF Generation | jsPDF (serverless-safe)              |
+| Cloud Storage  | Cloudinary (optional)                |
+| Validation     | Zod                                  |
+| Testing        | Jest + Supertest                     |
+| Containerize   | Docker (multi-stage, Node 20 Alpine) |
+| CI/CD          | GitHub Actions                       |
+| Deployment     | Vercel (serverless)                  |
 
 ---
 
@@ -69,6 +76,9 @@
 
 ```
 medivantage-backend/
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions CI/CD pipeline
 ├── src/
 │   ├── app.ts                  # Express app — CORS, middleware, routes
 │   ├── server.ts               # HTTP server + Socket.io bootstrap
@@ -110,8 +120,8 @@ medivantage-backend/
 │   │   └── express.d.ts        # req.user type augmentation
 │   └── utils/
 │       └── helpers.ts          # AppError, asyncHandler, token generators
+├── Dockerfile                  # Multi-stage production Docker image
 ├── vercel.json
-├── Dockerfile
 ├── render.yaml
 ├── jest.config.js
 ├── tsconfig.json
@@ -239,15 +249,84 @@ All endpoints are prefixed with `/api/v1`.
 
 ---
 
-The seed script populates the database with:
+## Docker
 
-- **50 medicines** across 8 categories
-- **30 diseases** with symptom mappings and suggested medications
-- **10 verified doctors** across all specializations
-- **1 demo patient** account
+The backend ships with a **2-stage Dockerfile** optimised for production:
+
+| Stage     | Base Image     | Purpose                                           |
+| --------- | -------------- | ------------------------------------------------- |
+| `builder` | node:20-alpine | Install all deps + compile TypeScript to `dist/`  |
+| `runner`  | node:20-alpine | Install prod-only deps, copy compiled output, run |
+
+The final image runs as a **non-root user** and contains no source `.ts` files or dev dependencies.
+
+### Build & run locally
 
 ```bash
-npm run seed
+# Build the image
+docker build -t medivantage-backend .
+
+# Run the container (pass your .env variables)
+docker run -p 5000:5000 --env-file .env medivantage-backend
+```
+
+The API will be available at `http://localhost:5000`.
+
+### Run with Docker Compose
+
+From the repository root (alongside the frontend):
+
+```bash
+docker compose up --build
+```
+
+---
+
+## CI/CD
+
+Continuous integration and delivery is handled by **GitHub Actions** (`.github/workflows/ci.yml`).
+
+### Pipeline overview
+
+```
+push to main / develop  ──►  test-build  ──►  docker  (main only)
+pull_request to main    ──►  test-build
+```
+
+### Jobs
+
+#### `test-build` — runs on every push and PR
+
+| Step                 | Description                            |
+| -------------------- | -------------------------------------- |
+| Checkout repository  | `actions/checkout@v4`                  |
+| Setup Node.js 20     | `actions/setup-node@v4` with npm cache |
+| Install dependencies | `npm ci`                               |
+| Build project        | `npm run build` — compiles TypeScript  |
+| Run tests            | `npm test` with `NODE_ENV=test`        |
+
+#### `docker` — runs on push to `main` only (after `test-build` passes)
+
+| Step                | Description                                              |
+| ------------------- | -------------------------------------------------------- |
+| Setup Docker Buildx | Enables multi-platform and layer cache support           |
+| Login to Docker Hub | Uses `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN` secrets    |
+| Build & push image  | Pushes `medivantage-backend:latest` and `:<git-sha>` tag |
+
+### Required GitHub Secrets
+
+Go to **Settings → Secrets and variables → Actions** and add:
+
+| Secret               | Description                          |
+| -------------------- | ------------------------------------ |
+| `DOCKERHUB_USERNAME` | Your Docker Hub username             |
+| `DOCKERHUB_TOKEN`    | Docker Hub access token (read/write) |
+
+The Docker image is published to:
+
+```
+<DOCKERHUB_USERNAME>/medivantage-backend:latest
+<DOCKERHUB_USERNAME>/medivantage-backend:<git-sha>
 ```
 
 ---
@@ -268,16 +347,36 @@ vercel --prod
 
 Set all required environment variables in the Vercel dashboard before deploying.
 
-### Docker
+### Docker (Self-hosted)
 
 ```bash
-docker build -t medivantage-backend .
-docker run -p 5000:5000 --env-file .env medivantage-backend
+# Pull the latest image from Docker Hub
+docker pull <DOCKERHUB_USERNAME>/medivantage-backend:latest
+
+# Run with environment variables
+docker run -d -p 5000:5000 --env-file .env \
+  --name medivantage-backend \
+  <DOCKERHUB_USERNAME>/medivantage-backend:latest
 ```
 
 ### Render
 
 Import `render.yaml` via the Render dashboard. Set `MONGO_URI` and `FRONTEND_URL` manually in the service environment.
+
+---
+
+## Database Seed
+
+The seed script populates the database with demo data:
+
+- **50 medicines** across 8 categories
+- **30 diseases** with symptom mappings and suggested medications
+- **10 verified doctors** across all specializations
+- **1 demo patient** account
+
+```bash
+npm run seed
+```
 
 ---
 
